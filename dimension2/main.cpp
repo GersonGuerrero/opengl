@@ -1,5 +1,6 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
+//holamunid
 void init(void)
 {
     /* selecciona el color de borrado */
