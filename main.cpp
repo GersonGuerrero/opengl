@@ -13,7 +13,8 @@ void resize(int height, int width) {
     glLoadIdentity();
 
     glFrustum(-ar, ar, -1.0, 1.0, 2.0, 90.0);
-    //gluLookAt(0, 2, 0, -1, 1, -3, 0, 1, 0);
+    //glutLookAt(0, 2, 0, -1, 1, -3, 0, 1, 0);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity() ;
 }
@@ -24,9 +25,10 @@ static void display(void)
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-5.0f);
     
+    
      texture[0] = SOIL_load_OGL_texture // cargamos la imagen
     (
-        "hola.jpg",
+        "hola.jpeg",
         SOIL_LOAD_AUTO,
         SOIL_CREATE_NEW_ID,
         SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -36,13 +38,13 @@ static void display(void)
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     
     glBegin(GL_POLYGON);
-    glTexCoord2f(0.0f, 0.0f);  
-    glVertex3f(1.0,-1.0,-1.0);
     glTexCoord2f(1.0f, 0.0f);  
-    glVertex3f(1.0,1.4,-1.0);
+    glVertex3f(1.0,-1.0,-1.0);
     glTexCoord2f(1.0f, 1.0f);  
-    glVertex3f(-0.5,0.5,-1.0);
+    glVertex3f(1.0,1.0,-1.0);
     glTexCoord2f(0.0f, 1.0f);  
+    glVertex3f(-1.0,1.0,-1.0);
+    glTexCoord2f(0.0f, 0.0f);  
     glVertex3f(-1.0,-1.0,-1.0);
     glEnd();
     
@@ -63,8 +65,8 @@ int main(int argc, char **argv)
     /////////////////////////////////////
     glEnable(GL_TEXTURE_2D);
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
-    glClearDepth(1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 0.5f);
+    glClearDepth(3.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
