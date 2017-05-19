@@ -1,22 +1,18 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
-#include <SOIL/SOIL.h> 
+
 
 
 GLuint texture[0];
 
-void resize(int height, int width) {
-    const float ar = (float) width / (float) height;
-    glViewport(0, 10, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glFrustum(-ar, ar, -1.0, 1.0, 2.0, 90.0);
-    //glutLookAt(0, 2, 0, -1, 1, -3, 0, 1, 0);
-    
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity() ;
+void resize(int h, int w) {
+  glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60.0, (float)w / (float)h, 1.0, 200.0);
+	glMatrixMode(GL_MODELVIEW); 
+  glLoadIdentity(); 
 }
 
 static void display(void)
@@ -25,30 +21,38 @@ static void display(void)
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-5.0f);
     
-    
-     texture[0] = SOIL_load_OGL_texture // cargamos la imagen
-    (
-        "hola.jpeg",
-        SOIL_LOAD_AUTO,
-        SOIL_CREATE_NEW_ID,
-        SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-    );
-	// allocate a texture name
-
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-    
-    glBegin(GL_POLYGON);
-    glTexCoord2f(1.0f, 0.0f);  
-    glVertex3f(1.0,-1.0,-1.0);
-    glTexCoord2f(1.0f, 1.0f);  
-    glVertex3f(1.0,1.0,-1.0);
-    glTexCoord2f(0.0f, 1.0f);  
-    glVertex3f(-1.0,1.0,-1.0);
-    glTexCoord2f(0.0f, 0.0f);  
-    glVertex3f(-1.0,-1.0,-1.0);
-    glEnd();
-    
-    glutSwapBuffers();
+    unsigned char ArcoIris[8][3] = {
+		{ 0x3f, 0x00, 0x3f }, // Violeta oscuro
+		{ 0x7f, 0x00, 0x7f }, // Violeta
+		{ 0xbf, 0x00, 0xbf }, // Malva
+		{ 0x00, 0x00, 0xff }, // Azul
+		{ 0x00, 0xff, 0x00 }, // Verde
+		{ 0xff, 0xff, 0x00 }, // Amarillo
+		{ 0xff, 0x7f, 0x00 }, // Naranja
+		{ 0xff, 0x00, 0x00 } // Rojo
+	};
+	
+	    // Indicamos el tipo de filtrado
+		glEnable(GL_TEXTURE_1D);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// Creamos la textura
+		glTexImage1D(GL_TEXTURE_1D,0,3,16,0,GL_RGB,GL_UNSIGNED_BYTE,ArcoIris);
+		// Indicamos el modo de mapeo
+		//(volcar el valor de los texels directamente sobre los pixels)
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_TEXTURE_MAX_LEVEL);
+	
+		glBegin(GL_QUADS);
+		glTexCoord1f (0.0);
+		glVertex3f (0, 0, 0);
+		glTexCoord1f (1.0);	
+		glVertex3f (0.8, 0, 0);
+		//glTexCoord1f (0.5);
+		glVertex3f (0.8, 0.8, 0);
+		glTexCoord1f (0.0);
+		glVertex3f (0, 0.8, 0);
+		glEnd();
+		glutSwapBuffers();
     
    
 }
@@ -62,11 +66,11 @@ int main(int argc, char **argv)
     glutReshapeFunc(resize);
     glutDisplayFunc(display);
    
-    /////////////////////////////////////
-    glEnable(GL_TEXTURE_2D);
+    //Agregado para texturas
+    glEnable (GL_TEXTURE_1D);
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.0f, 1.0f, 0.0f, 0.5f);
-    glClearDepth(3.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+    glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
